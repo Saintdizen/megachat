@@ -17,39 +17,20 @@ app.use((req, res, next) => {
             name: "Иван Чувахин",
             login: "test1",
             password: "test2",
-            key: "87df1a04-bac8-4e74-bc0a-0854326d5c00"
-        },
-        {
-            id: 2,
-            name: "Иван Иванов",
-            key: "ff907df4-ad9e-49f6-b443-033d1ac6d971"
-        },
+            key: "Basic dGVzdDE6dGVzdDI="
+        }
     ];
 
-
-    console.log(req.headers.authorization);
-
-    // parse login and password from headers
-    const b64auth = (req.headers.authorization || '').split(' ')[1] || ''
-    const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':')
-
-    // Verify login and password are set and correct
-
-    const login2 = register_users.filter(function (user) {
-        return user.id === login;
+    const user_auth = register_users.filter((user) => {
+        return user.key === req.headers.authorization;
     })
 
-    if (login && password && login === auth.login && password === auth.password) {
-        // Access granted...
+    if (user_auth.length === 1) {
         return next()
     }
 
-    // Access denied...
-    res.set('WWW-Authenticate', 'Basic realm="401"') // change this
-    res.status(401).send('Authentication required.') // custom message
-
-    // -----------------------------------------------------------------------
-
+    res.set('WWW-Authenticate', 'Basic realm="401"')
+    res.status(401).send('Authentication required.')
 })
 
 app.use(express.static(path.join(__dirname, 'public')));
