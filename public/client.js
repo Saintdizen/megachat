@@ -1,5 +1,5 @@
 // public/client.js
-const socket = io();
+const socket = io('http://155.212.135.199:3000');
 let peer = null;
 let localStream = null;
 const localAudio = document.getElementById('local-audio');
