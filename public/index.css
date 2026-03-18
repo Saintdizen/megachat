@@ -1,0 +1,109 @@
+* {
+    border-radius: 10px;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+}
+
+body {
+    background: #111111;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    display: flex;
+    flex-direction: row;
+}
+
+/* Сообщения */
+#main_messages {
+    border: none;
+    padding: 0px;
+    margin: 0px 3px;
+    width: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+}
+
+#messages {
+    border: 1px solid #444444;
+    padding: 5px;
+    margin: 3px;
+    display: block;
+    height: 100%;
+    overflow: auto;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+button {
+    margin: 3px;
+    background: #111111 !important;
+    color: white;
+    border: 1px solid #444444;
+    padding: 10px;
+    width: max-content;
+}
+
+button:hover {
+    border: 1px solid #1676f3;
+    background: #1676f3 !important;
+}
+
+input {
+    border: 1px solid #444444;
+    margin: 3px;
+    background: #111111;
+    color: white;
+    user-select: none;
+    padding: 10px;
+    width: -webkit-fill-available;
+}
+
+input:focus {
+    border: 1px solid #1676f3;
+    outline: none;
+}
+
+#main_controls {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: row;
+}
+
+#div_answer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 3px;
+}
+
+#div_message {
+    border: 1px solid #444;
+    background: #444;
+    padding: 8px;
+    margin: 5px;
+}
+
+/* Пользователи */
+#main_users {
+    border: 1px solid #444444;
+    padding: 5px;
+    margin: 3px;
+    width: max-content;
+}
+
+#div_user {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: aqua;
+    color: #111111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    margin: 3px;
+}

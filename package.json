@@ -1,0 +1,16 @@
+{
+  "name": "test_chat_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "private": true,
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "expressjs": "^1.0.1",
+    "socket.io": "^4.8.3"
+  }
+}
