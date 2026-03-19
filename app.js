@@ -1,42 +1,63 @@
-const express = require('express');
-const http = require('http');
-const socketio = require('socket.io');
-const path = require("node:path");
-
+const express = require("express");
 const app = express();
-const server = http.createServer(app);
-// Initialize Socket.IO server with CORS enabled
-const io = socketio(server, {
-    cors: {
-        origin: "*", // Allow all origins for simplicity in example
-        methods: ["GET", "POST"]
-    }
-});
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
+const port = process.env.PORT || 8080;
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname + "/public"));
+let clients = [];
 
-io.on('connection', socket => {
-    console.log('A user connected:', socket.id);
-
-    // When a user sends a signal, relay it to the target user
-    socket.on('signal', (data) => {
-        // data should contain { to: targetSocketId, signalData: ... }
-        io.to(data.to).emit('signal', {
-            from: socket.id,
-            signalData: data.signalData
-        });
+io.on("connection", (socket) => {
+    socket.on("RegClient", function (data) {
+        if (!data.createCall) {
+            let findClient = {};
+            findClient = clients.find((client) => {
+                return client.userId === data.currentUserId;
+            });
+            if (findClient && findClient.hasOwnProperty("userId")) {
+                findClient = {};
+                findClient.socketId = data.sessionId;
+            } else {
+                clients.push({ socketId: data.sessionId, userId: data.currentUserId });
+                setTimeout(() => {
+                    clients = clients.filter((client) => {
+                        return client.socketId != data.sessionId;
+                    });
+                    this.emit("SessionTimeOut");
+                }, 1000 * 60 * 60);
+            }
+        }
     });
 
-    // Notify other clients about a new user
-    socket.broadcast.emit('user-connected', socket.id);
-
-    // Handle user disconnection
-    socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-        socket.broadcast.emit('user-disconnected', socket.id);
+    socket.on("CallClient", function (data) {
+        if (data.createCall && data.userToCall) {
+            this.emit("CreatePeer", data);
+        }
     });
+
+    socket.on("Offer", SendOffer);
+    socket.on("Answer", SendAnswer);
+    socket.on("disconnect", Disconnect);
 });
 
-server.listen(8080, () => {
-    console.log('Signaling server listening on port 8080');
+function Disconnect() {
+    console.log("inside disconnect");
+}
+
+function SendOffer(offer) {
+    const emitToSocket = clients.find((client) => {
+        return client.userId == offer.userData.userToCall;
+    }).socketId;
+    this.broadcast.to(emitToSocket).emit("BackOffer", offer);
+}
+
+function SendAnswer(data) {
+    const emitToSocket = clients.find((client) => {
+        return client.userId == data.userData.currentUserId;
+    }).socketId;
+    this.broadcast.to(emitToSocket).emit("BackAnswer", data);
+}
+
+http.listen(port, () => {
+    console.log(`Active on ${port}`);
 });

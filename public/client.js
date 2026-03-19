@@ -1,81 +1,125 @@
-const socket = io.connect('https://chuichat.ru');
-//const socket = io.connect('https://localhost:8080');
-const localVideo = document.getElementById('localVideo');
-const remoteVideo = document.getElementById('remoteVideo');
-let currentPeer = null;
-let stream = null; // To hold local media stream
+let Peer = require("simple-peer");
+let socket = io();
 
-// 1. Get user media (webcam/microphone access)
-navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then(s => {
-        stream = s;
-        localVideo.srcObject = stream;
-    })
-    .catch(err => console.error("Failed to get local stream", err));
+let userRegisterBtn = document.getElementById("usernameRegisterBtn");
 
-// 2. Socket.IO event handlers
-socket.on('connect', () => {
-    console.log('Connected to signaling server, your ID:', socket.id);
+userRegisterBtn.addEventListener("click", () => {
+    var username = document.getElementById("username").value;
+    sessionStorage.setItem("webuser", username);
+
+    let userRegSection = document.getElementById("user-reg-section");
+    userRegSection.remove();
+
+    let videoCallSection = document.getElementById("video-call-section");
+    videoCallSection.hidden = false;
+
+    initVideoCalling();
 });
 
-socket.on('user-connected', (userId) => {
-    console.log('New user connected:', userId);
-    setTimeout(() => {
-        if (!currentPeer) {
-            create(userId)
-        };
-    }, 100)
-})
+function initVideoCalling() {
+    const video = document.querySelector("video");
 
-socket.on('signal', (data) => {
-    console.log('Received signal:', data);
-    if (currentPeer) {
-        currentPeer.signal(data.signalData);
-    } else {
-        currentPeer = createPeer(data.from, false, stream);
-        currentPeer.signal(data.signalData);
-    }
-});
+    let client = {};
 
-// 3. Simple-peer logic
-function createPeer(userId, initiator, stream) {
-    const peer = new SimplePeer({
-        initiator: initiator,
-        trickle: false, // For simplicity; trickle: true requires more signaling logic
-        stream: stream,
-        config: { // Use public Google STUN servers for NAT traversal
-            iceServers: [
-                { urls: "stun:stun.rtc.yandex.net:3478" }
-            ]
-        }
-    });
+    let currentUserId = sessionStorage.getItem("webuser");
+    navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+            video.srcObject = stream;
+            video.play();
 
-    peer.on('signal', data => {
-        // When 'simple-peer' generates a signal, send it to the server to relay to the other user
-        console.log('Sending signal:', data);
-        socket.emit('signal', {
-            to: userId,
-            signalData: data
+            var userToCall;
+            var callBtn = document.getElementById("calluser");
+            callBtn.addEventListener(
+                "click",
+                () => {
+                    userToCall = document.getElementById("usertocall").value;
+                    socket.emit("CallClient", {
+                        userToCall: userToCall,
+                        createCall: true,
+                        currentUserId: currentUserId,
+                    });
+                },
+                false
+            );
+
+            socket.emit("RegClient", {
+                userToCall: "",
+                createCall: false,
+                currentUserId: currentUserId,
+                sessionId: socket.id,
+            });
+
+            function InitPeer(type) {
+                let peer = new Peer({
+                    initiator: type == "init" ? true : false,
+                    stream: stream,
+                    trickle: false,
+                });
+                peer.on("stream", function (stream) {
+                    CreateVideo(stream);
+                });
+                peer.on("close", function (data) {
+                    console.log(data);
+                    document.getElementById("peerVideo").remove();
+                    peer.destroy();
+                });
+                return peer;
+            }
+
+            function MakePeer(userData) {
+                client.gotAnswer = false;
+                let peer = InitPeer("init");
+                peer.on("signal", (data) => {
+                    data = { ...data, userData: userData };
+                    if (!client.gotAnswer) {
+                        socket.emit("Offer", data);
+                    }
+                });
+                client.peer = peer;
+            }
+
+            function FrontAnswer(offer) {
+                let peer = InitPeer("notInit");
+                peer.on("signal", (data) => {
+                    data = { ...data, userData: offer.userData };
+                    socket.emit("Answer", data);
+                });
+                peer.signal(offer);
+            }
+
+            function SignalAnswer(answer) {
+                client.gotAnswer = true;
+                let peer = client.peer;
+                peer.signal(answer);
+            }
+
+            function CreateVideo(stream) {
+                let video = document.createElement("video");
+                video.id = "peerVideo";
+                video.srcObject = stream;
+                video.class = "embed-responsive-item";
+
+                document.querySelector("#peerDiv").appendChild(video);
+                video.play();
+            }
+
+            function SessionActive() {
+                document.write("Session Active");
+            }
+
+            function resetApp() {
+                console.log("reset");
+                location.reload();
+            }
+
+            socket.on("BackOffer", FrontAnswer);
+            socket.on("BackAnswer", SignalAnswer);
+            socket.on("SessionActive", SessionActive);
+            socket.on("CreatePeer", MakePeer);
+            socket.on("SessionTimeOut", resetApp);
+        })
+        .catch((err) => {
+            document.write(err);
         });
-    });
-
-    peer.on('stream', stream => {
-        // When the remote peer's stream arrives, display it
-        console.log('Received remote stream');
-        setTimeout(() => {
-            remoteVideo.srcObject = stream;
-        }, 250)
-    });
-
-    peer.on('error', err => {
-        console.error('Peer error:', err);
-    });
-
-    return peer;
-}
-
-function create(userId) {
-    if (!currentPeer && stream) {
-        currentPeer = createPeer(userId, true, stream);
-    }
 }

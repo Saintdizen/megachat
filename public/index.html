@@ -1,19 +1,46 @@
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Simple Peer Socket.IO Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Chat Webrtc</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
 </head>
 <body>
-<h1>Simple Peer Client</h1>
-<video id="localVideo" autoplay muted></video>
-<video id="remoteVideo" autoplay></video>
-<button onclick="create('123')">Создать</button>
-<button onclick="connect('123')">Присоединиться</button>
 
-<!-- Load Socket.IO client and simple-peer library -->
+<div class="container" id="user-reg-section">
+    <div class="form-group">
+        <label for="exampleInputEmail1">Enter your username</label>
+        <input id="username" placeholder="Your Username" class="form-control">
+    </div>
+    <button id="usernameRegisterBtn" class="btn btn-primary">LOGIN</button>
+</div>
+
+<div class="container-fluid" id="video-call-section" hidden>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Username to call</label>
+        <input id="usertocall" placeholder="Username To Call" class="form-control">
+    </div>
+    <button id="calluser" class="btn btn-primary">CALL USER</button>
+
+    <div class="container-fluid">
+        <div class="row h-100 w-100">
+            <div class="col-12 col-sm-6 d-flex justify-content-center">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <video class="embed-responsive-item" muted></video>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 d-flex justify-content-center">
+                <div id="peerDiv" class="embed-responsive embed-responsive-16by9">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="/socket.io/socket.io.js"></script>
-<script src="https://cdn.jsdelivr.net"></script>
-<script src="client.js"></script>
-<script src="simplepeer.min.js"></script>
+<script src="bundle.js"></script>
+<script src="simplepeer.min.js" ></script>
+<script src="client.js" ></script>
 </body>
 </html>
