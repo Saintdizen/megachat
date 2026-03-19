@@ -2,11 +2,6 @@ const socket = io();
 
 const userRegisterBtn = document.getElementById("usernameRegisterBtn");
 
-socket.on("disconnect", () => {
-    location.reload()
-    sessionStorage.clear()
-})
-
 userRegisterBtn.addEventListener("click", () => {
     const username = document.getElementById("username").value;
     sessionStorage.setItem("webuser", username);

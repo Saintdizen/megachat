@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
                 clients.push({ socketId: data.sessionId, userId: data.currentUserId });
                 setTimeout(() => {
                     clients = clients.filter((client) => {
-                        return client.socketId != data.sessionId;
+                        return client.socketId !== data.sessionId;
                     });
                     this.emit("SessionTimeOut");
                 }, 1000 * 60 * 60);
@@ -37,7 +37,14 @@ io.on("connection", (socket) => {
 
     socket.on("Offer", SendOffer);
     socket.on("Answer", SendAnswer);
-    socket.on("disconnect", Disconnect);
+    socket.on("disconnect", (socket) => {
+        const clin = clients.filter(client => {
+            return client.socketId === socket.id
+        });
+        clients.remove(clin);
+
+        console.log("client move out", clin)
+    });
 });
 
 function Disconnect() {
@@ -46,14 +53,14 @@ function Disconnect() {
 
 function SendOffer(offer) {
     const emitToSocket = clients.find((client) => {
-        return client.userId == offer.userData.userToCall;
+        return client.userId === offer.userData.userToCall;
     }).socketId;
     this.broadcast.to(emitToSocket).emit("BackOffer", offer);
 }
 
 function SendAnswer(data) {
     const emitToSocket = clients.find((client) => {
-        return client.userId == data.userData.currentUserId;
+        return client.userId === data.userData.currentUserId;
     }).socketId;
     this.broadcast.to(emitToSocket).emit("BackAnswer", data);
 }
