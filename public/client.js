@@ -8,6 +8,7 @@ let stream = null; // To hold local media stream
 function createVideo(id, remoteStream) {
     let video = document.createElement('video');
     video.id = id;
+    video.autoplay = true;
     video.srcObject = remoteStream
     document.body.appendChild(video);
 }
