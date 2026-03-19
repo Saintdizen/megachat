@@ -97,7 +97,7 @@ function create(userId) {
         currentPeer = createPeer(userId, true, stream);
         currentPeer.on('signal', (data) => {
             if (currentPeer) {
-                console.log('Received signal:', data);
+                console.log('Received signal:', data.signalData);
                 currentPeer.signal(data.signalData);
             }
         })
