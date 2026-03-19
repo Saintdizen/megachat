@@ -21,9 +21,10 @@ socket.on('connect', () => {
 socket.on('user-connected', (userId) => {
     console.log('New user connected:', userId);
     // In a two-user example, immediately call the other user
-    if (!currentPeer) {
-        callUser(userId);
-    }
+    // if (!currentPeer) {
+    //     callUser(userId);
+    // }
+    callUser(userId);
 });
 
 socket.on('signal', (data) => {
@@ -46,11 +47,6 @@ function createPeer(userId, initiator, stream) {
         stream: stream,
         config: { // Use public Google STUN servers for NAT traversal
             iceServers: [
-                // { urls: "stun:stun.l.google.com:19302" },
-                // { urls: "stun:stun1.l.google.com:19302" },
-                // { urls: "stun:stun2.l.google.com:19302" },
-                // { urls: "stun:stun3.l.google.com:19302" },
-                // { urls: "stun:stun4.l.google.com:19302" }
                 { urls: "stun:stun.rtc.yandex.net:3478" }
             ]
         }
