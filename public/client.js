@@ -27,9 +27,11 @@ socket.on('connect', () => {
 
 socket.on('user-connected', (userId) => {
     console.log('New user connected:', userId);
-    if (!currentPeer) {
-        create(userId)
-    };
+    setTimeout(() => {
+        if (!currentPeer) {
+            create(userId)
+        };
+    }, 100)
 });
 
 socket.on('signal', (data) => {
@@ -67,13 +69,15 @@ function createPeer(userId, initiator, stream) {
     peer.on('stream', stream => {
         // When the remote peer's stream arrives, display it
         console.log('Received remote stream');
-        let video = document.getElementById('remoteVideo')
-        if ('srcObject' in video) {
-            video.srcObject = stream
-        } else {
-            video.src = window.URL.createObjectURL(stream)
-        }
-        video.play()
+        setTimeout(() => {
+            let video = document.getElementById('remoteVideo')
+            if ('srcObject' in video) {
+                video.srcObject = stream
+            } else {
+                video.src = window.URL.createObjectURL(stream)
+            }
+            video.play()
+        }, 250)
     });
 
     peer.on('error', err => {
