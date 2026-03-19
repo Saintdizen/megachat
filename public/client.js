@@ -95,6 +95,12 @@ function create(userId) {
     // Initiator creates the peer
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
+        currentPeer.on('signal', (data) => {
+            if (currentPeer) {
+                console.log('Received signal:', data);
+                currentPeer.signal(data.signalData);
+            }
+        })
     }
 }
 
@@ -102,5 +108,13 @@ function connect(userId) {
     // Initiator creates the peer
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, false, stream);
+        currentPeer.on('signal', (data) => {
+            console.log('Received signal:', data.signalData);
+            if (!currentPeer) {
+                currentPeer = createPeer(data.from, false, stream);
+                currentPeer.signal(data.signalData);
+
+            }
+        })
     }
 }
