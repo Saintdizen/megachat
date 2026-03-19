@@ -40,7 +40,8 @@ io.on("connection", (socket) => {
     socket.on("disconnect", Disconnect);
 
 
-    socket.on("user-disconnected", (socket) => {
+    socket.on("disconnect", (socket) => {
+        console.log('User disconnected:', socket.id, 'Reason:', reason);
         const clin = clients.filter(client => {
             return client.socketId === socket.id
         });
