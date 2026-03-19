@@ -3,7 +3,7 @@ let socket = io();
 let userRegisterBtn = document.getElementById("usernameRegisterBtn");
 
 userRegisterBtn.addEventListener("click", () => {
-    var username = document.getElementById("username").value;
+    let username = document.getElementById("username").value;
     sessionStorage.setItem("webuser", username);
 
     let userRegSection = document.getElementById("user-reg-section");
