@@ -5,11 +5,11 @@ const localVideo = document.getElementById('localVideo');
 let currentPeer = null;
 let stream = null; // To hold local media stream
 
-function createVideo(remoteStream) {
-    const video = document.createElement('video');
-    video.id = "remoteVideo";
-    document.body.appendChild(video);
+function createVideo(id, remoteStream) {
+    let video = document.createElement('video');
+    video.id = id;
     video.srcObject = remoteStream
+    document.body.appendChild(video);
 }
 
 // 1. Get user media (webcam/microphone access)
@@ -30,8 +30,9 @@ socket.on('user-connected', (userId) => {
     // In a two-user example, immediately call the other user
     setTimeout(() => {
         if (!currentPeer) {
-            callUser(userId);
-        }
+            callUser(userId)
+            createVideo(userId);
+        };
     }, 250)
 });
 
