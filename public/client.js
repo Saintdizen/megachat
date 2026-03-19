@@ -70,6 +70,7 @@ function initVideoCalling() {
                     console.log(data);
                     document.getElementById("peerVideo").remove();
                     peer.destroy();
+                    sessionStorage.clear()
                 });
                 return peer;
             }
