@@ -49,3 +49,17 @@ video {
 .videos_block {
     display: flex;
 }
+
+.local_video {
+    display: block;
+    width: 200px;
+    height: auto;
+    position: absolute;
+    bottom: 0;
+}
+
+.remote_video {
+    display: flex;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+}
