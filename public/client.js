@@ -1,8 +1,6 @@
 const socket = io.connect('https://chuichat.ru');
 //const socket = io.connect('https://localhost:8080');
 const localVideo = document.getElementById('localVideo');
-const remoteVideo = document.getElementById('remoteVideo');
-let user = undefined
 let currentPeer = null;
 let stream = null; // To hold local media stream
 
@@ -29,25 +27,19 @@ socket.on('connect', () => {
 
 socket.on('user-connected', (userId) => {
     console.log('New user connected:', userId);
-    // In a two-user example, immediately call the other user
-    // setTimeout(() => {
-    //     if (!currentPeer) {
-    //         user = userId
-    //         create(user)
-    //     };
-    // }, 250)
+    if (!currentPeer) {
+        create(userId)
+    };
 });
 
 socket.on('signal', (data) => {
     console.log('Received signal:', data);
-    // When a signal is received, pass it to the peer connection
-    // if (currentPeer) {
-    //     currentPeer.signal(data.signalData);
-    // } else {
-    //     // If not the initiator, create the peer upon receiving the first signal (offer)
-    //     currentPeer = createPeer(data.from, false, stream);
-    //     currentPeer.signal(data.signalData);
-    // }
+    if (currentPeer) {
+        currentPeer.signal(data.signalData);
+    } else {
+        currentPeer = createPeer(data.from, false, stream);
+        currentPeer.signal(data.signalData);
+    }
 });
 
 // 3. Simple-peer logic
@@ -72,16 +64,16 @@ function createPeer(userId, initiator, stream) {
         });
     });
 
-    peer.on('stream', remoteStream => {
+    peer.on('stream', stream => {
         // When the remote peer's stream arrives, display it
         console.log('Received remote stream');
-
-        // setTimeout(() => {
-        //     if (!currentPeer) {
-        //         document.getElementById("remoteVideo").srcObject = remoteStream;
-        //     };
-        // }, 500)
-        remoteVideo.srcObject = remoteStream;
+        let video = document.getElementById('remoteVideo')
+        if ('srcObject' in video) {
+            video.srcObject = stream
+        } else {
+            video.src = window.URL.createObjectURL(stream)
+        }
+        video.play()
     });
 
     peer.on('error', err => {
@@ -92,29 +84,7 @@ function createPeer(userId, initiator, stream) {
 }
 
 function create(userId) {
-    // Initiator creates the peer
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
-        currentPeer.on('signal', (data) => {
-            if (currentPeer) {
-                console.log('Received signal:', data.signalData);
-                currentPeer.signal(data.signalData);
-            }
-        })
-    }
-}
-
-function connect(userId) {
-    // Initiator creates the peer
-    if (!currentPeer && stream) {
-        currentPeer = createPeer(userId, false, stream);
-        currentPeer.on('signal', (data) => {
-            console.log('Received signal:', data.signalData);
-            if (!currentPeer) {
-                currentPeer = createPeer(data.from, false, stream);
-                currentPeer.signal(data.signalData);
-
-            }
-        })
     }
 }
