@@ -18,7 +18,7 @@ socket.on('connect', () => {
     console.log('Connected to signaling server, your ID:', socket.id);
 });
 
-socket.on('user-connected', (userId) => {
+socket.on('lol', (userId) => {
     console.log('New user connected:', userId);
     setTimeout(() => {
         if (!currentPeer) {
@@ -75,6 +75,7 @@ function createPeer(userId, initiator, stream) {
 }
 
 function create(userId) {
+    socket.emit('lol');
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
     }
