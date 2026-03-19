@@ -37,6 +37,8 @@ video {
     background: #111111;
     border: 2px solid #333;
     outline: none;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 .controls {
