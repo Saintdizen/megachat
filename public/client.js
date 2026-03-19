@@ -75,7 +75,7 @@ function createPeer(userId, initiator, stream) {
 }
 
 function create(userId) {
-    socket.emit('lol');
+    socket.send('lol');
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
     }
