@@ -37,7 +37,10 @@ io.on("connection", (socket) => {
 
     socket.on("Offer", SendOffer);
     socket.on("Answer", SendAnswer);
-    socket.on("disconnect", (socket) => {
+    socket.on("disconnect", Disconnect);
+
+
+    socket.on("user-disconnected", (socket) => {
         const clin = clients.filter(client => {
             return client.socketId === socket.id
         });
