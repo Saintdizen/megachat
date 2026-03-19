@@ -79,7 +79,7 @@ function createPeer(userId, initiator, stream) {
 
         setTimeout(() => {
             if (!currentPeer) {
-                document.getElementById(user).srcObject = remoteStream;
+                document.getElementById("remoteVideo").srcObject = remoteStream;
             };
         }, 500)
         //remoteVideo.srcObject = remoteStream;
