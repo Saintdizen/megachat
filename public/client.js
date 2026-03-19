@@ -1,7 +1,11 @@
 const socket = io();
 
 const userRegisterBtn = document.getElementById("usernameRegisterBtn");
-sessionStorage.clear()
+
+socket.on("disconnect", () => {
+    location.reload()
+    sessionStorage.clear()
+})
 
 userRegisterBtn.addEventListener("click", () => {
     const username = document.getElementById("username").value;
@@ -14,6 +18,7 @@ userRegisterBtn.addEventListener("click", () => {
     videoCallSection.hidden = false;
 
     initVideoCalling();
+
 });
 
 function initVideoCalling() {
