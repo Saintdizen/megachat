@@ -38,21 +38,11 @@ io.on("connection", (socket) => {
     socket.on("Offer", SendOffer);
     socket.on("Answer", SendAnswer);
     socket.on("disconnect", Disconnect);
-
-
-    socket.on("disconnect", (socket, reason) => {
-        console.log('User disconnected:', socket.id, 'Reason:', reason);
-        const clin = clients.filter(client => {
-            return client.socketId === socket.id
-        });
-        clients.remove(clin);
-
-        console.log("client move out", clin)
-    });
 });
 
 function Disconnect() {
     console.log("inside disconnect");
+    clients = []
 }
 
 function SendOffer(offer) {
