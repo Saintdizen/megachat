@@ -21,10 +21,11 @@ socket.on('connect', () => {
 socket.on('user-connected', (userId) => {
     console.log('New user connected:', userId);
     // In a two-user example, immediately call the other user
-    // if (!currentPeer) {
-    //     callUser(userId);
-    // }
-    //callUser(userId);
+    setTimeout(() => {
+        if (!currentPeer) {
+            callUser(userId);
+        }
+    }, 250)
 });
 
 socket.on('signal', (data) => {
