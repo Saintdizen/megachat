@@ -19,7 +19,7 @@ userRegisterBtn.addEventListener("click", () => {
 function initVideoCalling() {
     const video = document.querySelector("video");
 
-    const client = {};
+    let client = {};
 
     const currentUserId = sessionStorage.getItem("webuser");
     navigator.mediaDevices
@@ -71,7 +71,6 @@ function initVideoCalling() {
                     console.log(data);
                     document.getElementById("peerVideo").remove();
                     peer.destroy();
-                    sessionStorage.clear()
                 });
                 return peer;
             }
