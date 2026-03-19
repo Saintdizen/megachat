@@ -77,9 +77,11 @@ function createPeer(userId, initiator, stream) {
         // When the remote peer's stream arrives, display it
         console.log('Received remote stream');
 
-        document.getElementById(user).srcObject = remoteStream;
-
-        // createVideo(remoteStream)
+        setTimeout(() => {
+            if (!currentPeer) {
+                document.getElementById(user).srcObject = remoteStream;
+            };
+        }, 500)
         //remoteVideo.srcObject = remoteStream;
     });
 
