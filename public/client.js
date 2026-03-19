@@ -30,25 +30,24 @@ socket.on('connect', () => {
 socket.on('user-connected', (userId) => {
     console.log('New user connected:', userId);
     // In a two-user example, immediately call the other user
-    setTimeout(() => {
-        if (!currentPeer) {
-            user = userId
-            callUser(user)
-            createVideo(user);
-        };
-    }, 250)
+    // setTimeout(() => {
+    //     if (!currentPeer) {
+    //         user = userId
+    //         create(user)
+    //     };
+    // }, 250)
 });
 
 socket.on('signal', (data) => {
     console.log('Received signal:', data);
     // When a signal is received, pass it to the peer connection
-    if (currentPeer) {
-        currentPeer.signal(data.signalData);
-    } else {
-        // If not the initiator, create the peer upon receiving the first signal (offer)
-        currentPeer = createPeer(data.from, false, stream);
-        currentPeer.signal(data.signalData);
-    }
+    // if (currentPeer) {
+    //     currentPeer.signal(data.signalData);
+    // } else {
+    //     // If not the initiator, create the peer upon receiving the first signal (offer)
+    //     currentPeer = createPeer(data.from, false, stream);
+    //     currentPeer.signal(data.signalData);
+    // }
 });
 
 // 3. Simple-peer logic
@@ -92,9 +91,16 @@ function createPeer(userId, initiator, stream) {
     return peer;
 }
 
-function callUser(userId) {
+function create(userId) {
     // Initiator creates the peer
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
+    }
+}
+
+function connect(userId) {
+    // Initiator creates the peer
+    if (!currentPeer && stream) {
+        currentPeer = createPeer(userId, false, stream);
     }
 }
