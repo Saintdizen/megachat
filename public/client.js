@@ -58,11 +58,7 @@ function initVideoCalling() {
                         iceServers: [
                             {
                                 // Пример публичного STUN-сервера
-                                urls: 'stun:stun.l.google.com:19302'
-                            },
-                            {
-                                // Другой популярный пример
-                                urls: 'stun:stun.stunprotocol.org:3478'
+                                urls: 'stun:stun.rtc.yandex.net:3478'
                             }
                         ]
                     }
