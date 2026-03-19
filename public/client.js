@@ -19,7 +19,7 @@ userRegisterBtn.addEventListener("click", () => {
 function initVideoCalling() {
     const video = document.querySelector("video");
 
-    let client = {};
+    const client = {};
 
     const currentUserId = sessionStorage.getItem("webuser");
     navigator.mediaDevices
@@ -29,7 +29,7 @@ function initVideoCalling() {
             video.play();
 
             let userToCall;
-            let callBtn = document.getElementById("calluser");
+            const callBtn = document.getElementById("calluser");
             callBtn.addEventListener(
                 "click",
                 () => {
@@ -51,7 +51,7 @@ function initVideoCalling() {
             });
 
             function InitPeer(type) {
-                let peer = new Peer({
+                const peer = new Peer({
                     initiator: type == "init" ? true : false,
                     stream: stream,
                     trickle: false,
@@ -78,7 +78,7 @@ function initVideoCalling() {
 
             function MakePeer(userData) {
                 client.gotAnswer = false;
-                let peer = InitPeer("init");
+                const peer = InitPeer("init");
                 peer.on("signal", (data) => {
                     data = { ...data, userData: userData };
                     if (!client.gotAnswer) {
@@ -89,7 +89,7 @@ function initVideoCalling() {
             }
 
             function FrontAnswer(offer) {
-                let peer = InitPeer("notInit");
+                const peer = InitPeer("notInit");
                 peer.on("signal", (data) => {
                     data = { ...data, userData: offer.userData };
                     socket.emit("Answer", data);
@@ -99,12 +99,12 @@ function initVideoCalling() {
 
             function SignalAnswer(answer) {
                 client.gotAnswer = true;
-                let peer = client.peer;
+                const peer = client.peer;
                 peer.signal(answer);
             }
 
             function CreateVideo(stream) {
-                let video = document.createElement("video");
+                const video = document.createElement("video");
                 video.id = "peerVideo";
                 video.srcObject = stream;
                 video.class = "embed-responsive-item";
