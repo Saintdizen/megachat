@@ -8,7 +8,7 @@
 body {
     background: #111111;
     width: -webkit-fill-available;
-    height: -webkit-fill-available;
+    height: max-content;
     display: flex;
     flex-direction: row;
     align-content: center;
@@ -21,7 +21,6 @@ input {
     border: 2px solid #333;
     padding: 10px;
     outline: none;
-    width: -webkit-fill-available;
 }
 
 button {
@@ -49,8 +48,10 @@ video {
 
 .videos_block {
     display: flex;
-    width: -webkit-fill-available;
-    height: -webkit-fill-available;
+    width: 500px;
+    height: auto;
+    margin: auto;
+    position: relative;
 }
 
 .main_videos_block {
