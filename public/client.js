@@ -18,7 +18,7 @@ socket.on('connect', () => {
     console.log('Connected to signaling server, your ID:', socket.id);
 });
 
-socket.broadcast.on('lol', (userId) => {
+socket.on('lol', (userId) => {
     console.log('New user connected:', userId);
     setTimeout(() => {
         if (!currentPeer) {
