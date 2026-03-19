@@ -18,6 +18,15 @@ socket.on('connect', () => {
     console.log('Connected to signaling server, your ID:', socket.id);
 });
 
+socket.on('user-connected', (userId) => {
+    console.log('New user connected:', userId);
+    setTimeout(() => {
+        if (!currentPeer) {
+            create(userId)
+        };
+    }, 100)
+})
+
 socket.on('signal', (data) => {
     console.log('Received signal:', data);
     if (currentPeer) {
@@ -66,26 +75,7 @@ function createPeer(userId, initiator, stream) {
 }
 
 function create(userId) {
-    const myCustomEvent = new CustomEvent('testEvent', {
-        detail: {
-            username: userId
-        },
-        bubbles: true, // Events can bubble up the DOM
-        cancelable: true // Event can be canceled
-    });
-    window.dispatchEvent(myCustomEvent);
-
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
     }
 }
-
-window.addEventListener('testEvent', (event) => {
-    console.log('New user connected:', event.detail.username);
-    setTimeout(() => {
-        if (!currentPeer) {
-            create(event.detail.username)
-        };
-    }, 100)
-});
-
