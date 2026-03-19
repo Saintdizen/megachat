@@ -1,7 +1,7 @@
 const socket = io.connect('https://chuichat.ru');
 //const socket = io.connect('https://localhost:8080');
 const localVideo = document.getElementById('localVideo');
-// const remoteVideo = document.getElementById('remoteVideo');
+const remoteVideo = document.getElementById('remoteVideo');
 let user = undefined
 let currentPeer = null;
 let stream = null; // To hold local media stream
@@ -77,12 +77,12 @@ function createPeer(userId, initiator, stream) {
         // When the remote peer's stream arrives, display it
         console.log('Received remote stream');
 
-        setTimeout(() => {
-            if (!currentPeer) {
-                document.getElementById("remoteVideo").srcObject = remoteStream;
-            };
-        }, 500)
-        //remoteVideo.srcObject = remoteStream;
+        // setTimeout(() => {
+        //     if (!currentPeer) {
+        //         document.getElementById("remoteVideo").srcObject = remoteStream;
+        //     };
+        // }, 500)
+        remoteVideo.srcObject = remoteStream;
     });
 
     peer.on('error', err => {
