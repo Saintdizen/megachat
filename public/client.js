@@ -24,7 +24,7 @@ socket.on('user-connected', (userId) => {
     // if (!currentPeer) {
     //     callUser(userId);
     // }
-    callUser(userId);
+    //callUser(userId);
 });
 
 socket.on('signal', (data) => {
