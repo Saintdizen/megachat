@@ -54,6 +54,13 @@ function initVideoCalling() {
                     initiator: type == "init" ? true : false,
                     stream: stream,
                     trickle: false,
+                    config: {
+                        iceServers: [
+                            {
+                                urls: "stun:stun.relay.metered.ca:80",
+                            }
+                        ]
+                    }
                 });
                 peer.on("stream", function (stream) {
                     CreateVideo(stream);
