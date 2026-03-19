@@ -66,17 +66,27 @@ function createPeer(userId, initiator, stream) {
 }
 
 function create(userId) {
-    socket.emit('testEvent', userId);
+    const myCustomEvent = new CustomEvent('testEvent', {
+        detail: {
+            username: userId
+        },
+        bubbles: true, // Events can bubble up the DOM
+        cancelable: true // Event can be canceled
+    });
+
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
     }
+
+    window.dispatchEvent(myCustomEvent);
 }
 
-socket.on('testEvent', (userId) => {
-    console.log('New user connected:', userId);
+window.addEventListener('testEvent', (event) => {
+    console.log('New user connected:', event.detail.username);
     setTimeout(() => {
         if (!currentPeer) {
-            create(userId)
+            create(event.detail.username)
         };
     }, 100)
 });
+
