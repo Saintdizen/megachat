@@ -1,60 +1,80 @@
-// public/client.js
-const socket = io();
-let peer = null;
-let localStream = null;
-const localAudio = document.getElementById('local-audio');
-const remoteAudio = document.getElementById('remote-audio');
-const controls = document.getElementById('controls');
+const socket = io.connect('http://localhost:8080');
+const localVideo = document.getElementById('localVideo');
+const remoteVideo = document.getElementById('remoteVideo');
+let currentPeer = null;
+let stream = null; // To hold local media stream
 
-async function startChat() {
-    try {
-        // Get local audio stream only (video: false)
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        localAudio.srcObject = localStream;
-        controls.style.display = 'block';
-        document.querySelector('button').style.display = 'none';
+// 1. Get user media (webcam/microphone access)
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then(s => {
+        stream = s;
+        localVideo.srcObject = stream;
+    })
+    .catch(err => console.error("Failed to get local stream", err));
 
-        // Initialize simple-peer
-        // Initiator is set to true for one side to start the connection process
-        peer = new SimplePeer({
-            initiator: location.hash === '#init', // Use a hash in URL to differentiate initiator
-            trickle: false, // Use complete SDP offers/answers
-            stream: localStream // Add local stream
-        });
+// 2. Socket.IO event handlers
+socket.on('connect', () => {
+    console.log('Connected to signaling server, your ID:', socket.id);
+});
 
-        // --- SimplePeer Events ---
-        peer.on('signal', signalData => {
-            // Send signaling data to the server
-            socket.emit('signal', { signal: signalData, callerID: socket.id });
-        });
-
-        peer.on('stream', stream => {
-            // When a remote stream is received, play it in the remote audio element
-            remoteAudio.srcObject = stream;
-        });
-
-        peer.on('error', (err) => console.error('Peer error:', err));
-
-    } catch (err) {
-        console.error('Failed to get local stream:', err);
-        alert('Could not access microphone. Please allow access.');
-    }
-}
-
-// --- Socket.io Events ---
-socket.on('signal', (data) => {
-    // When the server relays signaling data, pass it to the peer connection
-    if (peer) {
-        peer.signal(data.signal);
+socket.on('user-connected', (userId) => {
+    console.log('New user connected:', userId);
+    // In a two-user example, immediately call the other user
+    if (!currentPeer) {
+        callUser(userId);
     }
 });
 
-// --- Controls ---
-function toggleMute() {
-    if (localStream) {
-        const audioTrack = localStream.getAudioTracks()[0];
-        if (audioTrack) {
-            audioTrack.enabled = !audioTrack.enabled;
+socket.on('signal', (data) => {
+    console.log('Received signal:', data);
+    // When a signal is received, pass it to the peer connection
+    if (currentPeer) {
+        currentPeer.signal(data.signalData);
+    } else {
+        // If not the initiator, create the peer upon receiving the first signal (offer)
+        currentPeer = createPeer(data.from, false, stream);
+        currentPeer.signal(data.signalData);
+    }
+});
+
+// 3. Simple-peer logic
+function createPeer(userId, initiator, stream) {
+    const peer = new SimplePeer({
+        initiator: initiator,
+        trickle: false, // For simplicity; trickle: true requires more signaling logic
+        stream: stream,
+        config: { // Use public Google STUN servers for NAT traversal
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+            ]
         }
+    });
+
+    peer.on('signal', data => {
+        // When 'simple-peer' generates a signal, send it to the server to relay to the other user
+        console.log('Sending signal:', data);
+        socket.emit('signal', {
+            to: userId,
+            signalData: data
+        });
+    });
+
+    peer.on('stream', remoteStream => {
+        // When the remote peer's stream arrives, display it
+        console.log('Received remote stream');
+        remoteVideo.srcObject = remoteStream;
+    });
+
+    peer.on('error', err => {
+        console.error('Peer error:', err);
+    });
+
+    return peer;
+}
+
+function callUser(userId) {
+    // Initiator creates the peer
+    if (!currentPeer && stream) {
+        currentPeer = createPeer(userId, true, stream);
     }
 }

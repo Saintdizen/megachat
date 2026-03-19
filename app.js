@@ -1,34 +1,42 @@
-// server.js
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const socketio = require('socket.io');
 const path = require("node:path");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+// Initialize Socket.IO server with CORS enabled
+const io = socketio(server, {
+    cors: {
+        origin: "*", // Allow all origins for simplicity in example
+        methods: ["GET", "POST"]
+    }
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
     console.log('A user connected:', socket.id);
 
-    // When a user signals, relay the signal data to the other user
+    // When a user sends a signal, relay it to the target user
     socket.on('signal', (data) => {
-        // In a real app, you would target a specific peer.
-        // For simplicity, we broadcast to all other connected clients.
-        socket.broadcast.emit('signal', {
-            signal: data.signal,
-            callerID: data.callerID
+        // data should contain { to: targetSocketId, signalData: ... }
+        io.to(data.to).emit('signal', {
+            from: socket.id,
+            signalData: data.signalData
         });
     });
 
+    // Notify other clients about a new user
+    socket.broadcast.emit('user-connected', socket.id);
+
+    // Handle user disconnection
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
+        socket.broadcast.emit('user-disconnected', socket.id);
     });
 });
 
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+server.listen(8080, () => {
+    console.log('Signaling server listening on port 8080');
 });

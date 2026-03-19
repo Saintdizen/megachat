@@ -1,34 +1,18 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Simple Voice Chat</title>
-    <style>
-        #local-audio, #remote-audio {
-            display: none; /* Audio elements are invisible, but needed */
-        }
-        #controls button {
-            margin: 5px;
-        }
-    </style>
+    <title>Simple Peer Socket.IO Example</title>
 </head>
 <body>
-<h1>Simple Peer Socket.io Voice Chat</h1>
+<h1>Simple Peer Client</h1>
+<video id="localVideo" autoplay muted></video>
+<video id="remoteVideo" autoplay></video>
+<button onclick="callUser()">Call Peer</button>
 
-<button onclick="startChat()">Start Chat</button>
-<div id="controls" style="display: none;">
-    <button onclick="toggleMute()">Mute/Unmute</button>
-</div>
-
-<!-- Audio elements for local and remote streams -->
-<audio id="local-audio" autoplay muted></audio>
-<audio id="remote-audio" autoplay></audio>
-
-<!-- Load simple-peer and socket.io client libraries -->
+<!-- Load Socket.IO client and simple-peer library -->
 <script src="/socket.io/socket.io.js"></script>
-<script src="http://cdn.jsdelivr.net"></script>
-<script src="simplepeer.min.js"></script>
+<script src="https://cdn.jsdelivr.net"></script>
 <script src="client.js"></script>
+<script src="simplepeer.min.js"></script>
 </body>
 </html>
