@@ -46,11 +46,12 @@ function createPeer(userId, initiator, stream) {
         stream: stream,
         config: { // Use public Google STUN servers for NAT traversal
             iceServers: [
-                { urls: "stun:stun.l.google.com:19302" },
-                { urls: "stun:stun1.l.google.com:19302" },
-                { urls: "stun:stun2.l.google.com:19302" },
-                { urls: "stun:stun3.l.google.com:19302" },
-                { urls: "stun:stun4.l.google.com:19302" }
+                // { urls: "stun:stun.l.google.com:19302" },
+                // { urls: "stun:stun1.l.google.com:19302" },
+                // { urls: "stun:stun2.l.google.com:19302" },
+                // { urls: "stun:stun3.l.google.com:19302" },
+                // { urls: "stun:stun4.l.google.com:19302" }
+                { urls: "stun:stun.rtc.yandex.net:3478" }
             ]
         }
     });
