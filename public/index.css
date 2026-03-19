@@ -36,7 +36,6 @@ video {
     user-select: none;
     background: #111111;
     border: 2px solid #333;
-    margin: 10px;
     outline: none;
 }
 
@@ -48,6 +47,13 @@ video {
 
 .videos_block {
     display: flex;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+}
+
+.main_videos_block {
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 .local_video {
