@@ -1,15 +1,15 @@
-let socket = io();
+const socket = io();
 
-let userRegisterBtn = document.getElementById("usernameRegisterBtn");
+const userRegisterBtn = document.getElementById("usernameRegisterBtn");
 
 userRegisterBtn.addEventListener("click", () => {
-    let username = document.getElementById("username").value;
+    const username = document.getElementById("username").value;
     sessionStorage.setItem("webuser", username);
 
-    let userRegSection = document.getElementById("user-reg-section");
+    const userRegSection = document.getElementById("user-reg-section");
     userRegSection.remove();
 
-    let videoCallSection = document.getElementById("video-call-section");
+    const videoCallSection = document.getElementById("video-call-section");
     videoCallSection.hidden = false;
 
     initVideoCalling();
@@ -20,15 +20,15 @@ function initVideoCalling() {
 
     let client = {};
 
-    let currentUserId = sessionStorage.getItem("webuser");
+    const currentUserId = sessionStorage.getItem("webuser");
     navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
             video.srcObject = stream;
             video.play();
 
-            var userToCall;
-            var callBtn = document.getElementById("calluser");
+            let userToCall;
+            let callBtn = document.getElementById("calluser");
             callBtn.addEventListener(
                 "click",
                 () => {
