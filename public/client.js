@@ -73,12 +73,11 @@ function create(userId) {
         bubbles: true, // Events can bubble up the DOM
         cancelable: true // Event can be canceled
     });
+    window.dispatchEvent(myCustomEvent);
 
     if (!currentPeer && stream) {
         currentPeer = createPeer(userId, true, stream);
     }
-
-    window.dispatchEvent(myCustomEvent);
 }
 
 window.addEventListener('testEvent', (event) => {
