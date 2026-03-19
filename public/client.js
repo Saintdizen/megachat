@@ -1,9 +1,16 @@
 const socket = io.connect('https://chuichat.ru');
 //const socket = io.connect('https://localhost:8080');
 const localVideo = document.getElementById('localVideo');
-const remoteVideo = document.getElementById('remoteVideo');
+// const remoteVideo = document.getElementById('remoteVideo');
 let currentPeer = null;
 let stream = null; // To hold local media stream
+
+function createVideo(remoteStream) {
+    const video = document.createElement('video');
+    video.id = "remoteVideo";
+    document.body.appendChild(video);
+    video.srcObject = remoteStream
+}
 
 // 1. Get user media (webcam/microphone access)
 navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -65,7 +72,8 @@ function createPeer(userId, initiator, stream) {
     peer.on('stream', remoteStream => {
         // When the remote peer's stream arrives, display it
         console.log('Received remote stream');
-        remoteVideo.srcObject = remoteStream;
+        createVideo(remoteStream)
+        //remoteVideo.srcObject = remoteStream;
     });
 
     peer.on('error', err => {
