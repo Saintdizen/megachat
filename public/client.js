@@ -1,4 +1,3 @@
-let Peer = require("simple-peer");
 let socket = io();
 
 let userRegisterBtn = document.getElementById("usernameRegisterBtn");
