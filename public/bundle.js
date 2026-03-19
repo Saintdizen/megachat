@@ -7014,10 +7014,8 @@ Peer.WEBRTC_SUPPORT = !!getBrowserRTC()
 Peer.config = {
   iceServers: [
     {
-      urls: 'stun:stun.l.google.com:19302'
-    },
-    {
-      urls: 'stun:global.stun.twilio.com:3478?transport=udp'
+      // Пример публичного STUN-сервера
+      urls: 'stun:stun.rtc.yandex.net:3478'
     }
   ],
   sdpSemantics: 'unified-plan'
