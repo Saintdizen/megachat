@@ -45,3 +45,7 @@ video {
     justify-content: center;
     align-items: center;
 }
+
+.videos_block {
+    display: flex;
+}
