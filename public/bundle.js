@@ -8164,20 +8164,11 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
-let userRegisterBtn = document.getElementById("usernameRegisterBtn");
-
-userRegisterBtn.addEventListener("click", () => {
-  var username = document.getElementById("username").value;
-  sessionStorage.setItem("webuser", username);
-
-  let userRegSection = document.getElementById("user-reg-section");
-  userRegSection.remove();
-
-  let videoCallSection = document.getElementById("video-call-section");
-  videoCallSection.hidden = false;
-
+window.onload = () => {
+  var username = sessionStorage.getItem("webuser");
+  console.log(username)
   initVideoCalling();
-});
+}
 
 function initVideoCalling() {
   const video = document.querySelector("video");

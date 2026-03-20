@@ -1,20 +1,9 @@
 const socket = io();
 
-const userRegisterBtn = document.getElementById("usernameRegisterBtn");
-
-userRegisterBtn.addEventListener("click", () => {
-    const username = document.getElementById("username").value;
-    sessionStorage.setItem("webuser", username);
-
-    const userRegSection = document.getElementById("user-reg-section");
-    userRegSection.remove();
-
-    const videoCallSection = document.getElementById("video-call-section");
-    videoCallSection.hidden = false;
-
+window.onload = () => {
+    console.log(sessionStorage.getItem("webuser"));
     initVideoCalling();
-
-});
+}
 
 function initVideoCalling() {
     const video = document.querySelector("video");

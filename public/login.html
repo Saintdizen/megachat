@@ -1,0 +1,32 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chUiChat</title>
+    <link rel="stylesheet" href="login.css" >
+</head>
+<body>
+<div class="controls">
+    <h2>Авторизация</h2>
+    <input type="text" id="username" name="username" placeholder="Введите ваше имя">
+    <button id="usernameRegisterBtn">ВОЙТИ</button>
+</div>
+</body>
+<script>
+    const userRegisterBtn = document.getElementById("usernameRegisterBtn");
+    userRegisterBtn.addEventListener("click", () => {
+        const username = document.getElementById("username").value;
+        sessionStorage.setItem("webuser", username);
+        fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: username
+            }),
+        }).then(data => {
+            console.log('Success:', data)
+            window.location.href = '/'
+        }).catch((error) => console.error('Error:', error));
+    });
+</script>
+</html>

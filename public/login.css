@@ -1,0 +1,40 @@
+* {
+    border-radius: 10px;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+}
+
+body {
+    background: #111111;
+    width: -webkit-fill-available;
+    height:-webkit-fill-available;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+input {
+    user-select: none;
+    background: #111111;
+    border: 2px solid #333;
+    padding: 10px;
+    outline: none;
+    margin: 5px;
+}
+
+button {
+    user-select: none;
+    background: #111111;
+    border: 2px solid #333;
+    padding: 10px;
+    outline: none;
+    margin: 5px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
