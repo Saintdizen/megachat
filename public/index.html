@@ -23,12 +23,27 @@
 <script src="bundle.js"></script>
 <script src="simplepeer.min.js" ></script>
 <script>
+    function getCookie(name) {
+        // Add a semicolon and space prefix for consistent splitting
+        let value = "; " + document.cookie;
+        let parts = value.split("; " + name + "=");
+
+        // If the cookie name was found, extract the value
+        if (parts.length === 2) {
+            // Pop the value part and split by the next semicolon to get the value
+            return parts.pop().split(';').shift();
+        }
+        return null; // Return null if the cookie is not found
+    }
+
+
     window.onload = () => {
+        console.log(document.cookie);
         fetch('/check', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                name: sessionStorage.getItem("webuser")
+                name: getCookie('user')
             }),
         }).then(data => {
             console.log('Success:', data)

@@ -16,7 +16,6 @@
     const userRegisterBtn = document.getElementById("usernameRegisterBtn");
     userRegisterBtn.addEventListener("click", () => {
         const username = document.getElementById("username").value;
-        sessionStorage.setItem("webuser", username);
         fetch('/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -25,7 +24,7 @@
             }),
         }).then(data => {
             console.log('Success:', data)
-            window.location.href = '/'
+            window.location.href = '/';
         }).catch((error) => console.error('Error:', error));
     });
 </script>

@@ -2,36 +2,31 @@ let express = require('express');
 let path = require('path');
 
 let router = express.Router();
+router.use(express.json());
 
 let users = []
 
-let user = undefined
-
-router.get('/', function(req, res) {
-    console.log('Welcome to the server', user);
-    if (user) {
+router.get('/', (req, res) => {
+    console.log('Welcome to the server', req.cookies.user);
+    if (checkUser(req.cookies.user)) {
         res.sendFile(path.join(__dirname, "index.html"));
     } else {
         res.sendFile(path.join(__dirname, "login.html"));
     }
 });
 
-router.use(express.json());
 router.post("/login", (req, res) => {
     const receivedData = req.body;
     console.log('Login:', receivedData);
     users.push(receivedData);
-    user = checkUser(receivedData.name);
-    res.redirect("/")
+    res.cookie("user", receivedData.name)
+    res.send('');
 })
 
-router.use(express.json());
 router.post("/check", (req, res) => {
     const receivedData = req.body;
     console.log('Check:', receivedData);
-    user = checkUser(receivedData.name);
-    res.status(200).send(user);
-    // res.redirect("/")
+    res.send('');
 })
 
 function checkUser(userName) {

@@ -8164,9 +8164,20 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
+function getCookie(name) {
+  // Add a semicolon and space prefix for consistent splitting
+  let value = "; " + document.cookie;
+  let parts = value.split("; " + name + "=");
+
+  // If the cookie name was found, extract the value
+  if (parts.length === 2) {
+    // Pop the value part and split by the next semicolon to get the value
+    return parts.pop().split(';').shift();
+  }
+  return null; // Return null if the cookie is not found
+}
+
 setTimeout(() => {
-  var username = sessionStorage.getItem("webuser");
-  console.log(username)
   initVideoCalling();
 }, 500)
 
@@ -8176,7 +8187,7 @@ function initVideoCalling() {
 
   let client = {};
 
-  let currentUserId = sessionStorage.getItem("webuser");
+  let currentUserId = getCookie("user");
   navigator.mediaDevices
     .getUserMedia({ video: true, audio: true })
     .then((stream) => {

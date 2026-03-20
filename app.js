@@ -3,6 +3,8 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 8080;
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 let router = require("./public/router")
 

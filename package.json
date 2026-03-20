@@ -2,12 +2,13 @@
   "name": "test_chat_app",
   "version": "1.0.0",
   "description": "",
-  "main": "client.js",
+  "main": "app.js",
   "scripts": {
     "test": "node app.js"
   },
   "private": true,
   "dependencies": {
+    "cookie-parse": "^0.4.0",
     "cookie-parser": "^1.4.7",
     "ejs": "^5.0.1",
     "express": "^5.2.1",
