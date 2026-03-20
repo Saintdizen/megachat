@@ -16,25 +16,6 @@ app.use((req, res, next) => {
 
 let clients = [];
 
-// io.on('connection', (socket) => {
-//     console.log('Player connected: ' + socket.id);
-//
-//     // Player joins a specific match room
-//     socket.on('joinMatch', (matchId) => {
-//         socket.join(matchId);
-//         console.log(`Player ${socket.id} joined match: ${matchId}`);
-//
-//         // Notify only people in this match
-//         io.to(matchId).emit('matchMessage', `Player ${socket.id} joined.`);
-//     });
-//
-//     // Example: Update ball position only for this match
-//     socket.on('ballMove', (data) => {
-//         // 'data' contains matchId and ball coordinates
-//         socket.to(data.matchId).emit('ballPosition', data.position);
-//     });
-// });
-
 io.on("connection", (socket) => {
     console.log('Player connected: ' + socket.id);
     socket.on("RegClient", function (data) {
