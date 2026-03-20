@@ -8164,6 +8164,14 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
+socket.on('serverError', (error) => {
+  console.error('A server error occurred:');
+  console.error('Message:', error.message);
+  console.error('Name:', error.name);
+  console.error('Stack trace:', error.stack);
+  // You can also update the UI here to show an alert or a message
+});
+
 function getCookie(name) {
   // Add a semicolon and space prefix for consistent splitting
   let value = "; " + document.cookie;

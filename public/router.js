@@ -23,12 +23,6 @@ router.post("/login", (req, res) => {
     res.send('');
 })
 
-router.post("/check", (req, res) => {
-    const receivedData = req.body;
-    console.log('Check:', receivedData);
-    res.send('');
-})
-
 function checkUser(userName) {
     return users.find((user) => user.name === userName)
 }

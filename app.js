@@ -56,17 +56,37 @@ function Disconnect() {
 }
 
 function SendOffer(offer) {
-    const emitToSocket = clients.find((client) => {
-        return client.userId === offer.userData.userToCall;
-    }).socketId;
-    this.broadcast.to(emitToSocket).emit("BackOffer", offer);
+    try {
+        const emitToSocket = clients.find((client) => {
+            return client.userId === offer.userData.userToCall;
+        }).socketId;
+        this.broadcast.to(emitToSocket).emit("BackOffer", offer);
+    } catch (error) {
+        const serializedError = {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        };
+        this.emit('serverError', serializedError);
+        console.log(error);
+    }
 }
 
 function SendAnswer(data) {
-    const emitToSocket = clients.find((client) => {
-        return client.userId === data.userData.currentUserId;
-    }).socketId;
-    this.broadcast.to(emitToSocket).emit("BackAnswer", data);
+    try {
+        const emitToSocket = clients.find((client) => {
+            return client.userId === data.userData.currentUserId;
+        }).socketId;
+        this.broadcast.to(emitToSocket).emit("BackAnswer", data);
+    } catch (error) {
+        const serializedError = {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        };
+        this.emit('serverError', serializedError);
+        console.log(error);
+    }
 }
 
 http.listen(port, () => {
