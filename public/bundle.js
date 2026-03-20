@@ -8164,11 +8164,12 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
-window.onload = () => {
+setTimeout(() => {
   var username = sessionStorage.getItem("webuser");
   console.log(username)
   initVideoCalling();
-}
+}, 500)
+
 
 function initVideoCalling() {
   const video = document.querySelector("video");

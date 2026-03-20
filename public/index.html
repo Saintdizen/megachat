@@ -22,5 +22,18 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="bundle.js"></script>
 <script src="simplepeer.min.js" ></script>
+<script>
+    window.onload = () => {
+        fetch('/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: sessionStorage.getItem("webuser")
+            }),
+        }).then(data => {
+            console.log('Success:', data)
+        }).catch((error) => console.error('Error:', error));
+    }
+</script>
 </body>
 </html>

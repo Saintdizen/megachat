@@ -5,10 +5,11 @@ let router = express.Router();
 
 let users = []
 
-router.get('/', function(req, res) {
-    console.log('Welcome to the server', users);
+let user = undefined
 
-    if (checkUser()) {
+router.get('/', function(req, res) {
+    console.log('Welcome to the server', user);
+    if (user) {
         res.sendFile(path.join(__dirname, "index.html"));
     } else {
         res.sendFile(path.join(__dirname, "login.html"));
@@ -18,13 +19,23 @@ router.get('/', function(req, res) {
 router.use(express.json());
 router.post("/login", (req, res) => {
     const receivedData = req.body;
-    console.log('Received data:', receivedData);
+    console.log('Login:', receivedData);
     users.push(receivedData);
+    user = checkUser(receivedData.name);
     res.redirect("/")
 })
 
-function checkUser() {
-    return users.length > 0
+router.use(express.json());
+router.post("/check", (req, res) => {
+    const receivedData = req.body;
+    console.log('Check:', receivedData);
+    user = checkUser(receivedData.name);
+    res.status(200).send(user);
+    // res.redirect("/")
+})
+
+function checkUser(userName) {
+    return users.find((user) => user.name === userName)
 }
 
 

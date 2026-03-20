@@ -1,8 +1,12 @@
+let Peer = require("simple-peer");
 const socket = io();
 
 window.onload = () => {
-    console.log(sessionStorage.getItem("webuser"));
-    initVideoCalling();
+    setTimeout(() => {
+        var username = sessionStorage.getItem("webuser");
+        console.log(username)
+        initVideoCalling();
+    }, 1000)
 }
 
 function initVideoCalling() {
