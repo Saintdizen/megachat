@@ -8,11 +8,13 @@
 body {
     background: #111111;
     width: -webkit-fill-available;
-    height: max-content;
+    height: -webkit-fill-available;
     display: flex;
     flex-direction: row;
     align-content: center;
     justify-content: center;
+    padding: 0;
+    margin: 0;
 }
 
 input {
@@ -34,7 +36,6 @@ button {
 video {
     user-select: none;
     background: #111111;
-    border: 2px solid #333;
     outline: none;
     height: 100%;
     width: 100%;
@@ -46,16 +47,19 @@ video {
     align-items: center;
 }
 
-.videos_block {
-    display: flex;
-    height: auto;
-    margin: auto;
-    width: max-content;
-}
-
 .main_videos_block {
     width: -webkit-fill-available;
     height: -webkit-fill-available;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.videos_block {
+    display: flex;
+    height: -webkit-fill-available;
+    width: auto;
 }
 
 .local_video {
@@ -64,11 +68,12 @@ video {
     height: auto;
     position: absolute;
     bottom: 0;
+    left: 0;
 }
 
 .remote_video {
     display: flex;
-    width: 400px;
+    width: auto;
     height: -webkit-fill-available;
 }
 
