@@ -50,41 +50,42 @@ io.on("connection", (socket) => {
     socket.on("disconnect", Disconnect);
 });
 
-function Disconnect() {
-    console.log("inside disconnect");
-    clients = []
+function Disconnect(reason) {
+    let test = clients.filter((client) => {
+        return client.socketId === this.id;
+    });
+    clients.splice(clients.indexOf(test[0]), 1)
+    console.log("Client disconnected", test[0], reason);
 }
 
 function SendOffer(offer) {
-    try {
+    catchError(this, () => {
         const emitToSocket = clients.find((client) => {
             return client.userId === offer.userData.userToCall;
         }).socketId;
         this.broadcast.to(emitToSocket).emit("BackOffer", offer);
-    } catch (error) {
-        const serializedError = {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
-        };
-        this.emit('serverError', serializedError);
-        console.log(error);
-    }
+    })
 }
 
 function SendAnswer(data) {
-    try {
+    catchError(this, () => {
         const emitToSocket = clients.find((client) => {
             return client.userId === data.userData.currentUserId;
         }).socketId;
         this.broadcast.to(emitToSocket).emit("BackAnswer", data);
+    })
+}
+
+function catchError(main, func = () => {}) {
+    try {
+        func()
     } catch (error) {
         const serializedError = {
             message: error.message,
             stack: error.stack,
             name: error.name
         };
-        this.emit('serverError', serializedError);
+        main.emit('serverError', serializedError);
         console.log(error);
     }
 }
