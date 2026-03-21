@@ -8164,9 +8164,10 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
+let users = document.getElementById("users")
+
 socket.on("render_users", (arg1) => {
   console.log(arg1)
-  const users = document.getElementById("users")
   users.innerHTML = ''
   for (let user of arg1) {
     let user_div = document.createElement("div")
@@ -8234,21 +8235,6 @@ function initVideoCalling() {
     .then((stream) => {
       video.srcObject = stream;
       video.play();
-
-      var userToCall;
-      var callBtn = document.getElementById("calluser");
-      callBtn.addEventListener(
-        "click",
-        () => {
-          userToCall = document.getElementById("usertocall").value;
-          socket.emit("CallClient", {
-            userToCall: userToCall,
-            createCall: true,
-            currentUserId: currentUserId,
-          });
-        },
-        false
-      );
 
       socket.emit("RegClient", {
         userToCall: "",

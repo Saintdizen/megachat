@@ -4,30 +4,25 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 8080;
 const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-
 let router = require("./public/router")
 
+let clients = [];
+app.use(cookieParser());
 app.use('/', router);
 app.use(express.static(__dirname + "/public"));
 app.use((req, res, next) => {
     res.redirect("/");
 })
 
-let clients = [];
-
 io.on("connection", (socket) => {
     console.log('User connected: ' + socket.id);
+
     socket.on("RegClient", (data) => {
         if (!data.createCall) {
-            let findClient = {};
-            findClient = clients.find((client) => {
+            let findClient = clients.find((client) => {
                 return client.userId === data.currentUserId;
             });
-            if (findClient && findClient.hasOwnProperty("userId")) {
-                findClient = {};
-                findClient.socketId = data.sessionId;
-            } else {
+            if (findClient === undefined) {
                 clients.push({ socketId: data.sessionId, userId: data.currentUserId });
                 setTimeout(() => {
                     clients = clients.filter((client) => {
@@ -35,30 +30,30 @@ io.on("connection", (socket) => {
                     });
                     this.emit("SessionTimeOut");
                 }, 1000 * 60 * 60);
+            } else {
+                findClient.socketId = data.sessionId;
             }
             socket.emit("render_users", clients)
+            socket.broadcast.emit("render_users", clients)
         }
     });
 
-    socket.on("CallClient", ClientCall);
+    socket.on("CallClient", (data) => {
+        if (data.createCall && data.userToCall) {
+            socket.emit("CreatePeer", data);
+        }
+    });
     socket.on("Offer", SendOffer);
     socket.on("Answer", SendAnswer);
     socket.on("disconnect", Disconnect);
 });
 
-function ClientCall(data) {
-    catchError(this, () => {
-        if (data.createCall && data.userToCall) {
-            this.emit("CreatePeer", data);
-        }
-    })
-}
-
 function Disconnect(reason) {
+    console.log(clients)
     let test = clients.filter((client) => {
         return client.socketId === this.id;
     });
-    clients.splice(clients.indexOf(test[0]), 1)
+    // clients.splice(clients.indexOf(test[0]), 1)
     console.log("Client disconnected", test[0], reason);
 }
 
