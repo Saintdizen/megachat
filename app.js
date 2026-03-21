@@ -53,7 +53,9 @@ function Disconnect(reason) {
     let test = clients.filter((client) => {
         return client.socketId === this.id;
     });
-    // clients.splice(clients.indexOf(test[0]), 1)
+    clients.splice(clients.indexOf(test[0]), 1)
+    this.emit("render_users", clients)
+    this.broadcast.emit("render_users", clients)
     console.log("Client disconnected", test[0], reason);
 }
 

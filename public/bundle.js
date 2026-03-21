@@ -8193,10 +8193,6 @@ socket.on("render_users", (arg1) => {
     users.appendChild(user_div)
   }
 
-
-
-
-
 })
 
 socket.on('serverError', (error) => {
