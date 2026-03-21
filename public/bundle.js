@@ -8166,29 +8166,35 @@ let socket = io();
 
 socket.on("render_users", (arg1) => {
   console.log(arg1)
-  let users = document.getElementById("users")
-  let user = document.createElement("div")
-  user.innerHTML = arg1.userId
-  user.id = arg1.socketId
-  user.className = "user"
+  const users = document.getElementById("users")
+  users.innerHTML = ''
+  for (let user of arg1) {
+    let user_div = document.createElement("div")
+    user_div.innerHTML = user.userId
+    user_div.id = user.socketId
+    user_div.className = "user"
 
-  if (getCookie("user") !== arg1.userId) {
-    user.addEventListener(
-        "click",
-        () => {
-          socket.emit("CallClient", {
-            userToCall: user.innerHTML,
-            createCall: true,
-            currentUserId: getCookie("user"),
-          });
-        },
-        false
-    );
-  } else {
-    user.innerHTML = "Это Вы"
+
+    if (getCookie("user") !== user.userId) {
+      user_div.addEventListener(
+          "click",
+          () => {
+            socket.emit("CallClient", {
+              userToCall: user.userId,
+              createCall: true,
+              currentUserId: getCookie("user"),
+            });
+          },
+          false
+      );
+    }
+
+    users.appendChild(user_div)
   }
 
-  users.appendChild(user)
+
+
+
 
 })
 

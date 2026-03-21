@@ -29,9 +29,6 @@ io.on("connection", (socket) => {
                 findClient.socketId = data.sessionId;
             } else {
                 clients.push({ socketId: data.sessionId, userId: data.currentUserId });
-
-                socket.emit("render_users", { socketId: data.sessionId, userId: data.currentUserId })
-
                 setTimeout(() => {
                     clients = clients.filter((client) => {
                         return client.socketId !== data.sessionId;
@@ -39,19 +36,23 @@ io.on("connection", (socket) => {
                     this.emit("SessionTimeOut");
                 }, 1000 * 60 * 60);
             }
+            socket.emit("render_users", clients)
         }
     });
 
-    socket.on("CallClient", (data) => {
-        if (data.createCall && data.userToCall) {
-            this.emit("CreatePeer", data);
-        }
-    });
-
+    socket.on("CallClient", ClientCall);
     socket.on("Offer", SendOffer);
     socket.on("Answer", SendAnswer);
     socket.on("disconnect", Disconnect);
 });
+
+function ClientCall(data) {
+    catchError(this, () => {
+        if (data.createCall && data.userToCall) {
+            this.emit("CreatePeer", data);
+        }
+    })
+}
 
 function Disconnect(reason) {
     let test = clients.filter((client) => {

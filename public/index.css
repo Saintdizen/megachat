@@ -85,4 +85,8 @@ video {
     justify-content: center;
     align-items: center;
     margin: auto;
+    width: 50px;
+    height: 50px;
+    background: aqua;
+    color: black;
 }
