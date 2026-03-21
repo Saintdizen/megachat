@@ -39,6 +39,7 @@ video {
     outline: none;
     height: 100%;
     width: 100%;
+    border-radius: 10px;
 }
 
 .controls {
@@ -73,7 +74,14 @@ video {
 
 .remote_video {
     display: flex;
-    width: auto;
+    width: -webkit-fill-available;
+    justify-content: center;
+    align-items: center;
+    height: -webkit-fill-available;
+}
+
+.remote_video2 {
+    display: flex;
     height: -webkit-fill-available;
 }
 
@@ -94,4 +102,28 @@ video {
     background: aqua;
     color: black;
     margin: 5px;
+}
+
+/* Styles for screens 481px and wider (large mobile, tablets) */
+@media screen and (min-width: 481px) {
+    .remote_video2 {
+        height: auto;
+        width: -webkit-fill-available;
+    }
+}
+
+/* Styles for screens 768px and wider (tablets, laptops) */
+@media screen and (min-width: 768px) {
+    .remote_video2 {
+        height: auto;
+        width: -webkit-fill-available;
+    }
+}
+
+/* Styles for screens 1025px and wider (desktops) */
+@media screen and (min-width: 1025px) {
+    .remote_video2 {
+        width: auto;
+        height: -webkit-fill-available;
+    }
 }
