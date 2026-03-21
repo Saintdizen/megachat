@@ -8164,6 +8164,34 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
+socket.on("render_users", (arg1) => {
+  console.log(arg1)
+  let users = document.getElementById("users")
+  let user = document.createElement("div")
+  user.innerHTML = arg1.userId
+  user.id = arg1.socketId
+  user.className = "user"
+
+  if (getCookie("user") !== arg1.userId) {
+    user.addEventListener(
+        "click",
+        () => {
+          socket.emit("CallClient", {
+            userToCall: user.innerHTML,
+            createCall: true,
+            currentUserId: getCookie("user"),
+          });
+        },
+        false
+    );
+  } else {
+    user.innerHTML = "Это Вы"
+  }
+
+  users.appendChild(user)
+
+})
+
 socket.on('serverError', (error) => {
   console.error('A server error occurred:');
   console.error('Message:', error.message);
@@ -8188,7 +8216,6 @@ function getCookie(name) {
 setTimeout(() => {
   initVideoCalling();
 }, 500)
-
 
 function initVideoCalling() {
   const video = document.querySelector("video");

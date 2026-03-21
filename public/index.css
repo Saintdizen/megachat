@@ -71,3 +71,18 @@ video {
     width: 400px;
     height: -webkit-fill-available;
 }
+
+.users {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100px;
+}
+
+.user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}

@@ -17,8 +17,8 @@ app.use((req, res, next) => {
 let clients = [];
 
 io.on("connection", (socket) => {
-    console.log('Player connected: ' + socket.id);
-    socket.on("RegClient", function (data) {
+    console.log('User connected: ' + socket.id);
+    socket.on("RegClient", (data) => {
         if (!data.createCall) {
             let findClient = {};
             findClient = clients.find((client) => {
@@ -29,6 +29,9 @@ io.on("connection", (socket) => {
                 findClient.socketId = data.sessionId;
             } else {
                 clients.push({ socketId: data.sessionId, userId: data.currentUserId });
+
+                socket.emit("render_users", { socketId: data.sessionId, userId: data.currentUserId })
+
                 setTimeout(() => {
                     clients = clients.filter((client) => {
                         return client.socketId !== data.sessionId;
@@ -39,7 +42,7 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("CallClient", function (data) {
+    socket.on("CallClient", (data) => {
         if (data.createCall && data.userToCall) {
             this.emit("CreatePeer", data);
         }
