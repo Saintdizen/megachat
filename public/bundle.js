@@ -8164,7 +8164,8 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
-let active_call = {}
+let status_camera = false
+let camera_button = document.getElementById("camera_status")
 
 let users = document.getElementById("users")
 
@@ -8190,12 +8191,11 @@ socket.on("render_users", (arg1) => {
           "click",
           () => {
             sessionStorage.setItem("active_call_user", user.userId)
-            active_call = {
+            socket.emit("CallClient", {
               userToCall: user.userId,
               createCall: true,
               currentUserId: getCookie("user"),
-            }
-            socket.emit("CallClient", active_call);
+            });
           },
           false
       );
@@ -8233,12 +8233,20 @@ setTimeout(() => {
 
 
     // Асинхронная функция для доступа к камере
-    async function startCamera() {
+    async function startCamera(cam) {
       try {
-        let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        return {
-          track: stream.getVideoTracks()[0],
-          stream: stream
+        let stream = await navigator.mediaDevices.getUserMedia({ video: cam, audio: true });
+        if (cam === false) {
+          return {
+            track: stream.getAudioTracks()[0],
+            stream: stream
+          }
+        } else {
+          const currentVideoTrack = stream.getVideoTracks()[0];
+          return {
+            track: stream.getVideoTracks()[0],
+            stream: stream
+          }
         }
       } catch (error) {
         console.error('Ошибка доступа к камере:', error);
@@ -8258,22 +8266,42 @@ function initVideoCalling() {
           client.peer.destroy()
       })
 
-      document.getElementById("stop_camera").addEventListener("click", async () => {
-        const src = await startCamera();
-        stream.addTrack(src.track)
-        //client.peer.removeStream(stream)
-        client.peer.addStream(src.stream);
+      camera_button.addEventListener("click", async () => {
+        let src = undefined;
+        if (status_camera === false) {
+          status_camera = true;
+          src = await startCamera(status_camera);
+          camera_button.innerHTML = '<span class="material-symbols-outlined">video_camera_front_off</span>'
 
-        console.log(active_call)
+          stream.addTrack(src.track)
+          client.peer.addStream(src.stream);
 
-        socket.emit("CallClient", {
-          userToCall: sessionStorage.getItem("active_call_user"),
-          createCall: false,
-          currentUserId: getCookie("user"),
-        });
+          socket.emit("CallClient", {
+            userToCall: sessionStorage.getItem("active_call_user"),
+            createCall: false,
+            currentUserId: getCookie("user"),
+          });
 
-        video.srcObject = src.stream;
-        video.play();
+          video.srcObject = src.stream;
+          video.play();
+        } else if (status_camera === true) {
+          status_camera = false;
+          src = await startCamera(status_camera);
+
+          camera_button.innerHTML = '<span class="material-symbols-outlined">video_camera_front</span>'
+
+          stream.removeTrack(stream.getVideoTracks()[0])
+          client.peer.addStream(src.stream);
+
+          socket.emit("CallClient", {
+            userToCall: sessionStorage.getItem("active_call_user"),
+            createCall: false,
+            currentUserId: getCookie("user"),
+          });
+
+          video.srcObject = src.stream;
+          video.play();
+        }
       })
 
       video.srcObject = stream;

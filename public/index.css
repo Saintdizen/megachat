@@ -20,17 +20,25 @@ body {
 input {
     user-select: none;
     background: #111111;
-    border: 2px solid #333;
+    border: 1px solid #333;
     padding: 10px;
     outline: none;
 }
 
 button {
     user-select: none;
-    background: #111111;
-    border: 2px solid #333;
     padding: 10px;
     outline: none;
+    border-radius: 25px;
+    margin: 5px;
+    border: 1px solid rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(50px);
+}
+
+#stop_call {
+    background: brown;
+    border: 1px solid brown;
 }
 
 video {
@@ -70,6 +78,8 @@ video {
     position: absolute;
     bottom: 0;
     left: 0;
+    border: 1px solid #333;
+    margin: 10px;
 }
 
 .remote_video {
@@ -83,6 +93,7 @@ video {
 .remote_video2 {
     display: flex;
     height: -webkit-fill-available;
+    border: 1px solid #333;
 }
 
 .users {
@@ -104,6 +115,16 @@ video {
     margin: 5px;
 }
 
+#button_users {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
 .main_control_block {
     display: flex;
     align-items: center;
@@ -111,6 +132,9 @@ video {
     position: fixed;
     bottom: 0;
     margin: 10px;
+    border: 1px solid rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(50px);
 }
 
 /* Styles for screens 481px and wider (large mobile, tablets) */
@@ -135,4 +159,33 @@ video {
         width: auto;
         height: -webkit-fill-available;
     }
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+}
+
+.modal-content {
+    border: 1px solid rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(50px);
+    margin: auto;
+    padding: 20px;
+    width: 50%;
+    height: max-content;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
 }

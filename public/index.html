@@ -4,10 +4,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>chUiChat</title>
     <link rel="stylesheet" href="index.css" >
+    <link rel="stylesheet" href="/fonts/fonts.css" />
 </head>
 <body>
 
-<div class="users" id="users"></div>
+<button id="button_users">
+    <span class="material-symbols-outlined">contacts_product</span>
+</button>
+
+<div id="popup-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="users" id="users"></div>
+    </div>
+</div>
 
 <div class="main_videos_block" id="video-call-section">
     <div class="local_video"><video muted></video></div>
@@ -17,13 +27,20 @@
 </div>
 
 <div class="main_control_block" id="controls-section">
-    <button id="stop_camera">Включить камеру</button>
+    <button id="camera_status">
+        <span class="material-symbols-outlined">video_camera_front</span>
+    </button>
 <!--    <button id="stop_mic">Отключить микрофон</button>-->
-    <button id="stop_call">Завершить звонок</button>
+    <button id="stop_call">
+        <span class="material-symbols-outlined">cancel</span>
+    </button>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="bundle.js"></script>
+
+<script src="func.js"></script>
+
 <!--<script src="simplepeer.min.js" ></script>-->
 
 </body>
