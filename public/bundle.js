@@ -8251,6 +8251,8 @@ function initVideoCalling() {
         console.log(client)
         client.peer.addTrack(track.track, stream)
 
+        client.peer.emit("stream", stream)
+
         video.srcObject = stream;
         video.play();
 
