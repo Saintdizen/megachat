@@ -8246,17 +8246,13 @@ function initVideoCalling() {
       console.log(stream)
 
       document.getElementById("stop_camera").addEventListener("click", async () => {
-
         const track = await startCamera();
-
+        stream.addTrack(track.track)
         console.log(client)
+        client.peer.addTrack(track.track, stream)
 
-        client.peer.addTrack(track.track, track.stream)
-
-        // stream.addTrack(track)
         video.srcObject = stream;
         video.play();
-
 
         const remote_vid = document.getElementById("peerVideo")
         remote_vid.play()
