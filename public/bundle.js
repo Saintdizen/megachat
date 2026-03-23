@@ -8281,6 +8281,11 @@ function initVideoCalling() {
         peer.on("stream", function (stream) {
           CreateVideo(stream);
         });
+        peer.on('track', (track, stream) => {
+          // Handle individual tracks
+          peer.addTrack(track, stream)
+          console.log('Received track:', track.kind);
+        });
         peer.on("close", function (data) {
           console.log(data);
           document.getElementById("peerVideo").remove();
