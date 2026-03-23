@@ -8223,13 +8223,9 @@ setTimeout(() => {
 
     // Асинхронная функция для доступа к камере
     async function startCamera() {
-      const video = document.querySelector("video");
       try {
-        // Запрос видеопотока (основная камера)
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        // Подключение потока к видео-элементу
-        video.srcObject = stream;
-        video.play();
+        return stream.getVideoTracks()[0]
       } catch (error) {
         console.error('Ошибка доступа к камере:', error);
       }
@@ -8248,8 +8244,10 @@ function initVideoCalling() {
 
       document.getElementById("stop_camera").addEventListener("click", async () => {
 
-
-        await startCamera();
+        const track = await startCamera();
+        stream.addTrack(track)
+        video.srcObject = stream;
+        video.play();
 
       })
 
