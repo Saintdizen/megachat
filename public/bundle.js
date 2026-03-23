@@ -8249,6 +8249,9 @@ function initVideoCalling() {
         video.srcObject = stream;
         video.play();
 
+
+        const remote_vid = document.getElementById("peerVideo")
+        remote_vid.play()
       })
 
 
