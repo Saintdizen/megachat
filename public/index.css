@@ -104,6 +104,15 @@ video {
     margin: 5px;
 }
 
+.main_control_block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;
+    margin: 10px;
+}
+
 /* Styles for screens 481px and wider (large mobile, tablets) */
 @media screen and (min-width: 481px) {
     .remote_video2 {

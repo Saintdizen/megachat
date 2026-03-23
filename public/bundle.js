@@ -8220,6 +8220,21 @@ setTimeout(() => {
   initVideoCalling();
 }, 500)
 
+
+    // Асинхронная функция для доступа к камере
+    async function startCamera() {
+      const video = document.querySelector("video");
+      try {
+        // Запрос видеопотока (основная камера)
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        // Подключение потока к видео-элементу
+        video.srcObject = stream;
+        video.play();
+      } catch (error) {
+        console.error('Ошибка доступа к камере:', error);
+      }
+    }
+
 function initVideoCalling() {
   const video = document.querySelector("video");
 
@@ -8227,8 +8242,25 @@ function initVideoCalling() {
 
   let currentUserId = getCookie("user");
   navigator.mediaDevices
-    .getUserMedia({ video: true, audio: true })
+    .getUserMedia({ video: false, audio: true })
     .then((stream) => {
+      console.log(stream)
+
+      document.getElementById("stop_camera").addEventListener("click", async () => {
+
+
+        await startCamera();
+
+      })
+
+
+
+      // document.getElementById('stopBtn').addEventListener('click', () => {
+      //   videoStream.getTracks().forEach(track => track.stop()); // {Link: DEV Community https://dev.to/morinoko/stopping-a-webcam-with-javascript-4297}
+      // });
+
+      console.log(getCookie("user"))
+
       video.srcObject = stream;
       video.play();
 
@@ -8287,7 +8319,6 @@ function initVideoCalling() {
         let video = document.createElement("video");
         video.id = "peerVideo";
         video.srcObject = stream;
-        video.class = "embed-responsive-item";
 
         document.querySelector("#peerDiv").appendChild(video);
         video.play();
