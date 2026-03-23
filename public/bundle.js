@@ -8164,7 +8164,16 @@ function config (name) {
 let Peer = require("simple-peer");
 let socket = io();
 
+let active_call = {}
+
 let users = document.getElementById("users")
+
+socket.on("enableCamera", (stream) => {
+  console.log(stream)
+  let video2 = document.getElementById("peerVideo");
+  video2.srcObject = stream;
+  video2.play()
+})
 
 socket.on("render_users", (arg1) => {
   console.log(arg1)
@@ -8180,11 +8189,13 @@ socket.on("render_users", (arg1) => {
       user_div.addEventListener(
           "click",
           () => {
-            socket.emit("CallClient", {
+            sessionStorage.setItem("active_call_user", user.userId)
+            active_call = {
               userToCall: user.userId,
               createCall: true,
               currentUserId: getCookie("user"),
-            });
+            }
+            socket.emit("CallClient", active_call);
           },
           false
       );
@@ -8224,7 +8235,7 @@ setTimeout(() => {
     // Асинхронная функция для доступа к камере
     async function startCamera() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         return {
           track: stream.getVideoTracks()[0],
           stream: stream
@@ -8243,30 +8254,27 @@ function initVideoCalling() {
   navigator.mediaDevices
     .getUserMedia({ video: false, audio: true })
     .then((stream) => {
-      console.log(stream)
-
-      document.getElementById("stop_camera").addEventListener("click", async () => {
-        const track = await startCamera();
-        stream.addTrack(track.track)
-        console.log(client)
-        client.peer.addTrack(track.track, stream)
-
-        client.peer.emit("stream", stream)
-
-        video.srcObject = stream;
-        video.play();
-
-        const remote_vid = document.getElementById("peerVideo")
-        remote_vid.play()
+      document.getElementById("stop_call").addEventListener("click", () => {
+          client.peer.destroy()
       })
 
+      document.getElementById("stop_camera").addEventListener("click", async () => {
+        const src = await startCamera();
+        stream.addTrack(src.track)
+        //client.peer.removeStream(stream)
+        client.peer.addStream(src.stream);
 
+        console.log(active_call)
 
-      // document.getElementById('stopBtn').addEventListener('click', () => {
-      //   videoStream.getTracks().forEach(track => track.stop()); // {Link: DEV Community https://dev.to/morinoko/stopping-a-webcam-with-javascript-4297}
-      // });
+        socket.emit("CallClient", {
+          userToCall: sessionStorage.getItem("active_call_user"),
+          createCall: false,
+          currentUserId: getCookie("user"),
+        });
 
-      console.log(getCookie("user"))
+        video.srcObject = src.stream;
+        video.play();
+      })
 
       video.srcObject = stream;
       video.play();
@@ -8284,16 +8292,12 @@ function initVideoCalling() {
           stream: stream,
           trickle: false,
         });
+
         peer.on("stream", function (stream) {
           CreateVideo(stream);
         });
-        peer.on('track', (track, stream) => {
-          // Handle individual tracks
-          peer.addTrack(track, stream)
-          console.log('Received track:', track.kind);
-        });
-        peer.on("close", function (data) {
-          console.log(data);
+
+        peer.on("close", (data) => {
           document.getElementById("peerVideo").remove();
           peer.destroy();
         });
@@ -8317,8 +8321,10 @@ function initVideoCalling() {
         peer.on("signal", (data) => {
           data = { ...data, userData: offer.userData };
           socket.emit("Answer", data);
+          sessionStorage.setItem("active_call_user", offer.userData.currentUserId)
         });
         peer.signal(offer);
+        client.peer = peer;
       }
 
       function SignalAnswer(answer) {
@@ -8328,12 +8334,17 @@ function initVideoCalling() {
       }
 
       function CreateVideo(stream) {
-        let video = document.createElement("video");
-        video.id = "peerVideo";
-        video.srcObject = stream;
-
-        document.querySelector("#peerDiv").appendChild(video);
-        video.play();
+        if (document.getElementById("peerVideo") == null) {
+          let video = document.createElement("video");
+          video.id = "peerVideo";
+          video.srcObject = stream;
+          document.querySelector("#peerDiv").appendChild(video);
+          video.play();
+        } else {
+          let video = document.getElementById("peerVideo");
+          video.srcObject = stream;
+          video.play();
+        }
       }
 
       function SessionActive() {

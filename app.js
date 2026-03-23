@@ -41,6 +41,8 @@ io.on("connection", (socket) => {
     socket.on("CallClient", (data) => {
         if (data.createCall && data.userToCall) {
             socket.emit("CreatePeer", data);
+        } else {
+            socket.emit("CreatePeer", data);
         }
     });
     socket.on("Offer", SendOffer);
@@ -87,7 +89,7 @@ function catchError(main, func = () => {}) {
             name: error.name
         };
         main.emit('serverError', serializedError);
-        console.log(error);
+        console.error(error);
     }
 }
 
