@@ -8222,11 +8222,13 @@ setTimeout(() => {
 
 
     // Асинхронная функция для доступа к камере
-    async function startCamera(client) {
+    async function startCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        client.peer.addTrack(stream.getVideoTracks()[0], stream)
-        return stream.getVideoTracks()[0]
+        return {
+          track: stream.getVideoTracks()[0],
+          stream: stream
+        }
       } catch (error) {
         console.error('Ошибка доступа к камере:', error);
       }
@@ -8245,8 +8247,13 @@ function initVideoCalling() {
 
       document.getElementById("stop_camera").addEventListener("click", async () => {
 
-        const track = await startCamera(client);
-        stream.addTrack(track)
+        const track = await startCamera();
+
+        console.log(client)
+
+        client.peer.addTrack(track.track, track.stream)
+
+        // stream.addTrack(track)
         video.srcObject = stream;
         video.play();
 
